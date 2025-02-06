@@ -15,6 +15,7 @@ public class GitHubApiClient {
         this.httpClient = httpClient;
     }
 
+
     public String fetchUserActivity(String username) throws IOException, InterruptedException {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("GitHub username cannot be empty");
