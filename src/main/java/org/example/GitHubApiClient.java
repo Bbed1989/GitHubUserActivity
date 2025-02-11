@@ -26,18 +26,19 @@ public class GitHubApiClient {
                 .header("Accept", "application/vnd.github.v3+json")
                 .GET()
                .build();
+        return sendRequest(request);
+    }
 
-        try {
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
-                return response.body();
-            } else {
-                System.out.println("Error: Received HTTP " + response.statusCode());
-                return null;
-            }
-        } catch (IOException | InterruptedException e) {
-            System.out.println("Error: Unable to fetch data from GitHub API");
-            return null;
-        }
+    public String sendRequest(HttpRequest request) throws IOException, InterruptedException {
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return switch (response.statusCode()) {
+            case 200 -> response.body();
+            case 404 -> throw new IllegalStateException("User not found on GitHub");
+            case 403 -> throw new IllegalStateException("API rate limit exceeded");
+            case 500 -> throw new IOException("Internal server error on GitHub");
+            case 422 -> throw new IllegalStateException("Invalid request");
+            case 401 -> throw new IllegalStateException("Unauthorized access to GitHub API");
+            default -> throw new IOException("HTTP error response: " + response.statusCode());
+        };
     }
 }
