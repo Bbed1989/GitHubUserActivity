@@ -69,7 +69,7 @@ java -jar github-activity-cli.jar --user octocat --format json
 
 ## Contact
 Author: Bohdan Bedrii  
-GitHub: [your-profile](https://github.com/your-profile)
+GitHub: https://github.com/bbed1989
 
 
 
